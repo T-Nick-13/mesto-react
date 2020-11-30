@@ -10,22 +10,37 @@ import ImagePopup from './ImagePopup.js';
 
 function App() {
 
-  const [isEditProfilePopupOpen, setisEditProfilePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setisEditAvatarPopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = React.useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
 
 
   function handleEditProfileClick() {
-    setisEditProfilePopupOpen(true)
-  }
+    setIsEditProfilePopupOpen(true)
+  };
 
   function handleEditAvatarClick() {
-    setisEditAvatarPopupOpen(true)
-  }
+    setIsEditAvatarPopupOpen(true)
+  };
 
   function handleAddPlaceClick() {
-    setisAddPlacePopupOpen(true)
+    setIsAddPlacePopupOpen(true)
+  };
+
+  function closeAllPopups() {
+    setIsEditProfilePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+  };
+
+  function handleEscClose(evt) {
+    if (evt.key === 'Escape') {
+      closeAllPopups()
+    }
   }
+
+  document.addEventListener('keydown', handleEscClose);
+
 
   return (
     <div className="page">
@@ -36,7 +51,7 @@ function App() {
       </main>*/}
       <Footer/>
 
-      <PopupWithForm name="" title="Редактировать профиль" isOpen={isEditProfilePopupOpen}>
+      <PopupWithForm name="" title="Редактировать профиль" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} >
         <input id="input-name" type="text" placeholder="Имя" className="popup__text popup__text_name" minLength="2" maxLength="40" required/>
         <span id="input-name-error" className="popup__text-error"></span>
         <input id="input-occupation" type="text" placeholder="О себе" className="popup__text popup__text_occupation" minLength="2" maxLength="200" required/>
@@ -44,7 +59,7 @@ function App() {
         <button className="popup__btn" type="submit">Сохранить</button>
       </PopupWithForm>
 
-      <PopupWithForm name="_card" title="Новое место" isOpen={isAddPlacePopupOpen} >
+      <PopupWithForm name="_card" title="Новое место" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} >
         <input id="input-place" type="text" placeholder="Название" className="popup__text popup__text_place" minLength="1" maxLength="30" required/>
         <span id="input-place-error" className="popup__text-error"></span>
         <input id="input-link" type="url" placeholder="Ссылка на картинку" className="popup__text popup__text_link" required/>
@@ -72,11 +87,11 @@ function App() {
         </div>
   </div>*/}
 
-      <PopupWithForm name="-submit" title="Вы уверены?">
+      <PopupWithForm name="-submit" title="Вы уверены?" >
         <button className="popup-submit__btn popup__btn" type="submit">Да</button>
       </PopupWithForm>
 
-      <PopupWithForm name="-avatar" title="Обновить аватар" isOpen={isEditAvatarPopupOpen}>
+      <PopupWithForm name="-avatar" title="Обновить аватар" isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
         <input id="input-link" type="url" placeholder="Ссылка на картинку" className="popup__text popup__text_link" required/>
         <span id="input-link-error" className="popup__text-error"></span>
         <button className="popup__btn popup__btn-crd" type="submit">Сохранить</button>
