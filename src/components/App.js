@@ -7,12 +7,30 @@ import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
+import api from '../utils/Api.js';
 
 function App() {
 
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  const [userName, setUserName] = React.useState('');
+  const [userAvatar, setUserAvatar] = React.useState('');
+  const [userDescription, setUserDescription] = React.useState('');
+
+
+  React.useEffect(() => {
+    api.getUserData()
+      .then((res) => {
+        setUserName(res.name);
+        setUserAvatar(res.avatar);
+        setUserDescription(res.about)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
 
 
   function handleEditProfileClick() {
@@ -45,7 +63,8 @@ function App() {
   return (
     <div className="page">
       <Header/>
-      <Main  onEditProfile={handleEditProfileClick} onEditAvatar={handleEditAvatarClick} onAddPlace={handleAddPlaceClick} />
+      <Main  onEditProfile={handleEditProfileClick} onEditAvatar={handleEditAvatarClick} onAddPlace={handleAddPlaceClick}
+      userAvatar={userAvatar} name={userName} about={userDescription} />
       {/*<main>
         <ul className="elements page__elements"></ul>
       </main>*/}
