@@ -1,4 +1,4 @@
-//General form for all popups
+
 function PopupWithForm(props) {
 
   return(

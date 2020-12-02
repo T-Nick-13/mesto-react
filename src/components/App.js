@@ -1,6 +1,3 @@
-//import logo from './logo.svg';
-//import './App.css';
-//import logoPath from '../images/logo.svg';
 import React from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
@@ -19,6 +16,8 @@ function App() {
   const [userAvatar, setUserAvatar] = React.useState('');
   const [userDescription, setUserDescription] = React.useState('');
   const [cards, setCards] = React.useState([]);
+  const [selectedCard, setSelectedCard] = React.useState(false);
+
 
 
   React.useEffect(() => {
@@ -69,6 +68,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setSelectedCard(false)
   };
 
   function handleEscClose(evt) {
@@ -76,6 +76,14 @@ function App() {
       closeAllPopups()
     }
   }
+
+  function handleCardClick(props) {
+    setSelectedCard({
+      link: props.link,
+      name: props.name
+    })
+  }
+
 
   document.addEventListener('keydown', handleEscClose);
 
@@ -99,7 +107,7 @@ function App() {
                 name={card.name}
                 key={card.id}
                 likes={card.likes}
-
+                onCardClick={handleCardClick}
               />
             )
           })
@@ -123,25 +131,10 @@ function App() {
         <button className="popup__btn popup__btn-crd" type="submit">Создать</button>
       </PopupWithForm>
 
-      <ImagePopup/>
-
-      {/*<div className="popup-image">
-        <div className="popup-image__container">
-          <img className="popup-image__picture" src="#" alt=""/>
-          <p className="popup-image__title"></p>
-          <button className="popup-image__close-btn popup__close-btn" type="button"></button>
-        </div>
-      </div>*/}
-
-      {/*<div className="popup popup-submit">
-        <div className="popup__container">
-          <h2 className="popup-submit__heading">Вы уверены?</h2>
-          <form className="popup__form">
-          <button className="popup-submit__btn popup__btn" type="submit">Да</button>
-          </form>
-          <button className="popup__close-btn" type="button"></button>
-        </div>
-  </div>*/}
+      <ImagePopup
+        card={selectedCard}
+        onClose={closeAllPopups}
+      />
 
       <PopupWithForm name="-submit" title="Вы уверены?" >
         <button className="popup-submit__btn popup__btn" type="submit">Да</button>
