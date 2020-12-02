@@ -16,7 +16,7 @@ function Main(props) {
         </div>
         <button type="button" className="profile__add-button" onClick={props.onAddPlace}></button>
       </section>
-      <ul className="elements page__elements"></ul>
+      <ul className="elements page__elements">{props.cards}</ul>
     </main>
   )
 }

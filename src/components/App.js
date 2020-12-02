@@ -8,6 +8,7 @@ import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
 import api from '../utils/Api.js';
+import Card from './Card.js';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
   const [userName, setUserName] = React.useState('');
   const [userAvatar, setUserAvatar] = React.useState('');
   const [userDescription, setUserDescription] = React.useState('');
+  const [cards, setCards] = React.useState([]);
 
 
   React.useEffect(() => {
@@ -25,6 +27,24 @@ function App() {
         setUserName(res.name);
         setUserAvatar(res.avatar);
         setUserDescription(res.about)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  React.useEffect(() => {
+    api.getInitialCards()
+      .then((res) => {
+        const cardList = res.map((card)=>{
+          return {
+            link: card.link,
+            id: card._id,
+            name: card.name,
+            likes: card.likes.length
+          }
+        })
+        setCards(cardList)
       })
       .catch((err) => {
         console.log(err);
@@ -63,11 +83,28 @@ function App() {
   return (
     <div className="page">
       <Header/>
-      <Main  onEditProfile={handleEditProfileClick} onEditAvatar={handleEditAvatarClick} onAddPlace={handleAddPlaceClick}
-      userAvatar={userAvatar} name={userName} about={userDescription} />
-      {/*<main>
-        <ul className="elements page__elements"></ul>
-      </main>*/}
+
+      <Main
+        onEditProfile={handleEditProfileClick}
+        onEditAvatar={handleEditAvatarClick}
+        onAddPlace={handleAddPlaceClick}
+        userAvatar={userAvatar}
+        name={userName}
+        about={userDescription}
+        cards={
+          cards.map((card)=>{
+            return (
+              <Card
+                link={card.link}
+                name={card.name}
+                key={card.id}
+                likes={card.likes}
+
+              />
+            )
+          })
+        } />
+
       <Footer/>
 
       <PopupWithForm name="" title="Редактировать профиль" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} >
