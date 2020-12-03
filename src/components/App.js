@@ -16,65 +16,63 @@ function App() {
   const [userAvatar, setUserAvatar] = React.useState('');
   const [userDescription, setUserDescription] = React.useState('');
   const [cards, setCards] = React.useState([]);
-  const [selectedCard, setSelectedCard] = React.useState(false);
-
+  const [selectedCard, setSelectedCard] = React.useState({});
 
 
   React.useEffect(() => {
-    api.getUserData()
-      .then((res) => {
-        setUserName(res.name);
-        setUserAvatar(res.avatar);
-        setUserDescription(res.about)
+    Promise.all([
+      api.getUserData(),
+      api.getInitialCards()
+    ])
+    .then(([userInfo, initialCards]) => {
+      setUserName(userInfo.name);
+      setUserAvatar(userInfo.avatar);
+      setUserDescription(userInfo.about)
+      const cardList = initialCards.map((card)=>{
+        return {
+          link: card.link,
+          id: card._id,
+          name: card.name,
+          likes: card.likes.length
+        }
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+      setCards(cardList)
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }, [])
+
 
   React.useEffect(() => {
-    api.getInitialCards()
-      .then((res) => {
-        const cardList = res.map((card)=>{
-          return {
-            link: card.link,
-            id: card._id,
-            name: card.name,
-            likes: card.likes.length
-          }
-        })
-        setCards(cardList)
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
+    const ESC = 'Escape';
+    function handleEscClose(evt) {
+      if (evt.key === ESC) {
+        closeAllPopups();
+      }
+    }
+    document.addEventListener('keyup', handleEscClose);
+    return () => document.removeEventListener('keyup', handleEscClose)
+  }, [])
 
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true)
-  };
+  }
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true)
-  };
+  }
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(true)
-  };
+  }
 
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setSelectedCard(false)
-  };
-
-  function handleEscClose(evt) {
-    if (evt.key === 'Escape') {
-      closeAllPopups()
-    }
+    setSelectedCard({})
   }
 
   function handleCardClick(props) {
@@ -83,9 +81,6 @@ function App() {
       name: props.name
     })
   }
-
-
-  document.addEventListener('keydown', handleEscClose);
 
 
   return (
@@ -115,20 +110,18 @@ function App() {
 
       <Footer/>
 
-      <PopupWithForm name="" title="Редактировать профиль" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} >
+      <PopupWithForm name="" title="Редактировать профиль" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} btnValue="Сохранить" >
         <input id="input-name" type="text" placeholder="Имя" className="popup__text popup__text_name" minLength="2" maxLength="40" required/>
         <span id="input-name-error" className="popup__text-error"></span>
         <input id="input-occupation" type="text" placeholder="О себе" className="popup__text popup__text_occupation" minLength="2" maxLength="200" required/>
         <span id="input-occupation-error" className="popup__text-error"></span>
-        <button className="popup__btn" type="submit">Сохранить</button>
       </PopupWithForm>
 
-      <PopupWithForm name="_card" title="Новое место" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} >
+      <PopupWithForm name="_card" title="Новое место" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}  btnValue="Создать" >
         <input id="input-place" type="text" placeholder="Название" className="popup__text popup__text_place" minLength="1" maxLength="30" required/>
         <span id="input-place-error" className="popup__text-error"></span>
         <input id="input-link" type="url" placeholder="Ссылка на картинку" className="popup__text popup__text_link" required/>
         <span id="input-link-error" className="popup__text-error"></span>
-        <button className="popup__btn popup__btn-crd" type="submit">Создать</button>
       </PopupWithForm>
 
       <ImagePopup
@@ -136,14 +129,12 @@ function App() {
         onClose={closeAllPopups}
       />
 
-      <PopupWithForm name="-submit" title="Вы уверены?" >
-        <button className="popup-submit__btn popup__btn" type="submit">Да</button>
+      <PopupWithForm name="-submit" title="Вы уверены?" btnValue="Да" >
       </PopupWithForm>
 
-      <PopupWithForm name="-avatar" title="Обновить аватар" isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}>
+      <PopupWithForm name="-avatar" title="Обновить аватар" isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} btnValue="Сохранить" >
         <input id="input-link" type="url" placeholder="Ссылка на картинку" className="popup__text popup__text_link" required/>
         <span id="input-link-error" className="popup__text-error"></span>
-        <button className="popup__btn popup__btn-crd" type="submit">Сохранить</button>
       </PopupWithForm>
 
 
