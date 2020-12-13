@@ -6,6 +6,7 @@ import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
 import api from '../utils/Api.js';
 import Card from './Card.js';
+import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
   const [userDescription, setUserDescription] = React.useState('');
   const [cards, setCards] = React.useState([]);
   const [selectedCard, setSelectedCard] = React.useState({});
+  const [currentUser, setCurrentUser] = React.useState('');//new
 
 
   React.useEffect(() => {
@@ -27,13 +29,15 @@ function App() {
     .then(([userInfo, initialCards]) => {
       setUserName(userInfo.name);
       setUserAvatar(userInfo.avatar);
-      setUserDescription(userInfo.about)
+      setUserDescription(userInfo.about);
+      setCurrentUser(userInfo)
       const cardList = initialCards.map((card)=>{
         return {
           link: card.link,
           id: card._id,
           name: card.name,
-          likes: card.likes.length
+          likes: card.likes,
+          owner: card.owner
         }
       })
       setCards(cardList)
@@ -84,6 +88,7 @@ function App() {
 
 
   return (
+    <CurrentUserContext.Provider value={currentUser}>
     <div className="page">
       <Header/>
 
@@ -102,6 +107,7 @@ function App() {
                 name={card.name}
                 key={card.id}
                 likes={card.likes}
+                owner={card.owner}
                 onCardClick={handleCardClick}
               />
             )
@@ -139,6 +145,7 @@ function App() {
 
 
     </div>
+    </CurrentUserContext.Provider>
   );
 }
 
