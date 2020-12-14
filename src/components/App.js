@@ -6,6 +6,7 @@ import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
 import api from '../utils/Api.js';
 import Card from './Card.js';
+import EditProfilePopup from './EditProfilePopup.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function App() {
@@ -93,7 +94,14 @@ function App() {
         const newCards = cards.filter((c) => c._id !== card._id);
         setCards(newCards);
       })
+  }
 
+  function handleUpdateUser(userInfo) {
+    api.saveUserData(userInfo)
+      .then((inputValues)=> {
+        setCurrentUser(inputValues);
+        closeAllPopups()
+      })
   }
 
 
@@ -125,12 +133,10 @@ function App() {
 
       <Footer/>
 
-      <PopupWithForm name="" title="Редактировать профиль" isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} btnValue="Сохранить" >
-        <input id="input-name" type="text" placeholder="Имя" className="popup__text popup__text_name" minLength="2" maxLength="40" required/>
-        <span id="input-name-error" className="popup__text-error"></span>
-        <input id="input-occupation" type="text" placeholder="О себе" className="popup__text popup__text_occupation" minLength="2" maxLength="200" required/>
-        <span id="input-occupation-error" className="popup__text-error"></span>
-      </PopupWithForm>
+      <EditProfilePopup
+        isOpen={isEditProfilePopupOpen}
+        onClose={closeAllPopups}
+        onUpdateUser={handleUpdateUser} />
 
       <PopupWithForm name="_card" title="Новое место" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}  btnValue="Создать" >
         <input id="input-place" type="text" placeholder="Название" className="popup__text popup__text_place" minLength="1" maxLength="30" required/>
