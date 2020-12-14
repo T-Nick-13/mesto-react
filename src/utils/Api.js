@@ -83,6 +83,13 @@ class Api {
     })
     .then(this._checkServerResponse);
   }
+
+  changeLikeCardStatus(cardId, isLiked) {
+    return isLiked ? this.saveLike(cardId) : this.deleteLike(cardId);
+  }
+
+
+
 }
 
 

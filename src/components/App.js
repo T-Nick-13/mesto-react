@@ -18,7 +18,7 @@ function App() {
   const [userDescription, setUserDescription] = React.useState('');
   const [cards, setCards] = React.useState([]);
   const [selectedCard, setSelectedCard] = React.useState({});
-  const [currentUser, setCurrentUser] = React.useState('');//new
+  const [currentUser, setCurrentUser] = React.useState('');
 
 
   React.useEffect(() => {
@@ -30,17 +30,8 @@ function App() {
       setUserName(userInfo.name);
       setUserAvatar(userInfo.avatar);
       setUserDescription(userInfo.about);
-      setCurrentUser(userInfo)
-      const cardList = initialCards.map((card)=>{
-        return {
-          link: card.link,
-          id: card._id,
-          name: card.name,
-          likes: card.likes,
-          owner: card.owner
-        }
-      })
-      setCards(cardList)
+      setCurrentUser(userInfo);
+      setCards(initialCards)
     })
     .catch((err) => {
       console.log(err);
@@ -79,11 +70,30 @@ function App() {
     setSelectedCard({})
   }
 
-  function handleCardClick(props) {
+  function handleCardClick(card) {
     setSelectedCard({
-      link: props.link,
-      name: props.name
+      link: card.link,
+      name: card.name
     })
+  }
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+
+    api.changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+        setCards(newCards);
+    });
+  }
+
+  function handleCardDelete(card) {
+    api.deleteCard(card._id)
+      .then(()=>{
+        const newCards = cards.filter((c) => c._id !== card._id);
+        setCards(newCards);
+      })
+
   }
 
 
@@ -103,12 +113,11 @@ function App() {
           cards.map((card)=>{
             return (
               <Card
-                link={card.link}
-                name={card.name}
-                key={card.id}
-                likes={card.likes}
-                owner={card.owner}
+                key={card._id}
+                card={card}
                 onCardClick={handleCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
               />
             )
           })
