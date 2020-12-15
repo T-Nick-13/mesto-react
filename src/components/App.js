@@ -7,6 +7,7 @@ import ImagePopup from './ImagePopup.js';
 import api from '../utils/Api.js';
 import Card from './Card.js';
 import EditProfilePopup from './EditProfilePopup.js';
+import EditAvatarPopup from './EditAvatarPopup.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function App() {
@@ -85,7 +86,11 @@ function App() {
       .then((newCard) => {
         const newCards = cards.map((c) => c._id === card._id ? newCard : c);
         setCards(newCards);
-    });
+    })
+      .catch((err) => {
+      console.log(err)
+      })
+
   }
 
   function handleCardDelete(card) {
@@ -94,6 +99,9 @@ function App() {
         const newCards = cards.filter((c) => c._id !== card._id);
         setCards(newCards);
       })
+      .catch((err) => {
+        console.log(err)
+        })
   }
 
   function handleUpdateUser(userInfo) {
@@ -102,6 +110,20 @@ function App() {
         setCurrentUser(inputValues);
         closeAllPopups()
       })
+      .catch((err) => {
+        console.log(err)
+        })
+  }
+
+  function handleUpdateAvatar(data) {
+    api.saveAvatar(data)
+      .then((avatar)=> {
+        setCurrentUser(avatar);
+        closeAllPopups()
+      })
+      .catch((err) => {
+        console.log(err)
+        })
   }
 
 
@@ -153,10 +175,10 @@ function App() {
       <PopupWithForm name="-submit" title="Вы уверены?" btnValue="Да" >
       </PopupWithForm>
 
-      <PopupWithForm name="-avatar" title="Обновить аватар" isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} btnValue="Сохранить" >
-        <input id="input-link" type="url" placeholder="Ссылка на картинку" className="popup__text popup__text_link" required/>
-        <span id="input-link-error" className="popup__text-error"></span>
-      </PopupWithForm>
+      <EditAvatarPopup
+        isOpen={isEditAvatarPopupOpen}
+        onClose={closeAllPopups}
+        onUpdateAvatar={handleUpdateAvatar} />
 
 
     </div>
