@@ -7,7 +7,8 @@ function Main(props) {
 
   return (
     <main>
-      <section className="profile page__profile">
+      <section
+        className="profile page__profile">
         <div className="profile__container">
           <div className="profile__avatar_overlay" onClick={props.onEditAvatar} ></div>
           <img className="profile__avatar" src={currentUser.avatar} alt="Изображение аватар" />

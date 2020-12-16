@@ -1,7 +1,7 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm.js';
 
-function AddPlacePopup({ onAddPlace, isOpen, onClose }) {
+function AddPlacePopup({ onAddPlace, isOpen, onClose, btnValue }) {
 
   const cardTitle = React.useRef();
   const cardLink = React.useRef();
@@ -21,16 +21,16 @@ function AddPlacePopup({ onAddPlace, isOpen, onClose }) {
       title="Новое место"
       isOpen={isOpen}
       onClose={onClose}
-      btnValue="Создать"
+      btnValue={btnValue}
       onSubmit={handleSubmit} >
       <input id="input-place"
-       type="text"
-       placeholder="Название"
-       className="popup__text popup__text_place"
-       minLength="1"
-       maxLength="30"
-       required
-       ref={cardTitle} />
+        type="text"
+        placeholder="Название"
+        className="popup__text popup__text_place"
+        minLength="1"
+        maxLength="30"
+        required
+        ref={cardTitle} />
       <span id="input-place-error"
         className="popup__text-error">
       </span>

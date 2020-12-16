@@ -22,6 +22,8 @@ function App() {
   const [cards, setCards] = React.useState([]);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState('');
+  const [loading, setLoading] = React.useState('Сохранить');
+  const [loadingPlace, setLoadingPlace] = React.useState('Создать');
 
 
   React.useEffect(() => {
@@ -55,15 +57,18 @@ function App() {
 
 
   function handleEditProfileClick() {
-    setIsEditProfilePopupOpen(true)
+    setIsEditProfilePopupOpen(true);
+    setLoading('Сохранить')
   }
 
   function handleEditAvatarClick() {
-    setIsEditAvatarPopupOpen(true)
+    setIsEditAvatarPopupOpen(true);
+    setLoading('Сохранить')
   }
 
   function handleAddPlaceClick() {
-    setIsAddPlacePopupOpen(true)
+    setIsAddPlacePopupOpen(true);
+    setLoadingPlace('Создать')
   }
 
   function closeAllPopups() {
@@ -106,6 +111,7 @@ function App() {
   }
 
   function handleUpdateUser(userInfo) {
+    setLoading('Сохранение...');
     api.saveUserData(userInfo)
       .then((inputValues)=> {
         setCurrentUser(inputValues);
@@ -117,6 +123,7 @@ function App() {
   }
 
   function handleUpdateAvatar(data) {
+    setLoading('Сохранение...');
     api.saveAvatar(data)
       .then((avatar)=> {
         setCurrentUser(avatar);
@@ -128,6 +135,7 @@ function App() {
   }
 
   function handleAddPlaceSubmit(data) {
+    setLoadingPlace('Сохранение...')
     api.saveNewCard(data)
       .then((newCard)=> {
         setCards([newCard, ...cards]);
@@ -137,7 +145,6 @@ function App() {
         console.log(err)
         })
   }
-
 
 
   return (
@@ -171,12 +178,14 @@ function App() {
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
-        onUpdateUser={handleUpdateUser} />
+        onUpdateUser={handleUpdateUser}
+        btnValue={loading} />
 
       <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
-        onAddPlace={handleAddPlaceSubmit} />
+        onAddPlace={handleAddPlaceSubmit}
+        btnValue={loadingPlace} />
 
       <ImagePopup
         card={selectedCard}
@@ -189,12 +198,12 @@ function App() {
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
-        onUpdateAvatar={handleUpdateAvatar} />
-
+        onUpdateAvatar={handleUpdateAvatar}
+        btnValue={loading} />
 
     </div>
     </CurrentUserContext.Provider>
   );
 }
 
-export default App;
+export default App
