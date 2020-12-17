@@ -88,8 +88,6 @@ class Api {
     return isLiked ? this.saveLike(cardId) : this.deleteLike(cardId);
   }
 
-
-
 }
 
 
