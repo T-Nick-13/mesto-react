@@ -2,13 +2,13 @@ import React from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
-import PopupWithForm from './PopupWithForm.js';
 import ImagePopup from './ImagePopup.js';
-import api from '../utils/Api.js';
+import api from '../utils/api.js';
 import Card from './Card.js';
 import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
+import ConfirmationPopup from './ConfirmationPopup.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function App() {
@@ -16,9 +16,6 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [userName, setUserName] = React.useState('');
-  const [userAvatar, setUserAvatar] = React.useState('');
-  const [userDescription, setUserDescription] = React.useState('');
   const [cards, setCards] = React.useState([]);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState('');
@@ -32,9 +29,6 @@ function App() {
       api.getInitialCards()
     ])
     .then(([userInfo, initialCards]) => {
-      setUserName(userInfo.name);
-      setUserAvatar(userInfo.avatar);
-      setUserDescription(userInfo.about);
       setCurrentUser(userInfo);
       setCards(initialCards)
     })
@@ -156,9 +150,9 @@ function App() {
         onEditProfile={handleEditProfileClick}
         onEditAvatar={handleEditAvatarClick}
         onAddPlace={handleAddPlaceClick}
-        userAvatar={userAvatar}
-        name={userName}
-        about={userDescription}
+        userAvatar={currentUser.avatar}
+        name={currentUser.name}
+        about={currentUser.about}
         cards={
           cards.map((card)=>{
             return (
@@ -189,11 +183,9 @@ function App() {
 
       <ImagePopup
         card={selectedCard}
-        onClose={closeAllPopups}
-      />
+        onClose={closeAllPopups} />
 
-      <PopupWithForm name="-submit" title="Вы уверены?" btnValue="Да" >
-      </PopupWithForm>
+      <ConfirmationPopup />
 
       <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
